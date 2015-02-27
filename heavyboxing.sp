@@ -148,7 +148,7 @@ public Event_SuddenDeathStart(Handle:event, const String:name[], bool:dontBroadc
 	}
 	
 	//Disable Point Capping
-	ToggleCP("Disable");
+	ToggleObjectiveState(false);
 	
 	StartSong();
 	
@@ -160,7 +160,7 @@ public Event_SuddenDeathEnd(Handle:event, const String:name[], bool:dontBroadcas
 		SudddenDeathTime = false;
 		StopSong();
 		//Enable Point Capping
-		ToggleCP("Enable");
+		ToggleObjectiveState(true);
 	}
 	
 
@@ -244,30 +244,23 @@ public StopSong() {
 	}	
 }
 
-public ToggleCP(String:toggle[50]) {
-    new i = -1;
-    new CP = 0;
+// Blatenly stolen from: https://forums.alliedmods.net/showthread.php?t=140862
+ToggleObjectiveState(bool:newState)
+{
+	/* Things to enable or disable */
+	new String:targets[5][25] = {"team_control_point_master","team_control_point","trigger_capture_area","item_teamflag","func_capturezone"};
+	new String:input[7] = "Disable";
+	if(newState) input = "Enable";
 
-    for (new n = 0; n <= 16; n++)
-    {
-        CP = FindEntityByClassname(i, "trigger_capture_area");
-        if (IsValidEntity(CP))
-        {
-            AcceptEntityInput(CP, toggle);
-            i = CP;
-        }
-        else
-            break;
-    }
-	for (new n = 0; n <= 16; n++)
-    {
-        CP = FindEntityByClassname(i, "item_teamflag");
-        if (IsValidEntity(CP))
-        {
-            AcceptEntityInput(CP, toggle);
-            i = CP;
-        }
-        else
-            break;
-    }
+	/* Loop through things that should be enabled/disabled, and push it as an input */
+	new ent = 0;
+	for (new i = 0; i < 5; i++)
+	{
+		ent = MaxClients+1;
+		while((ent = FindEntityByClassname(ent, targets[i]))!=-1)
+		{
+			AcceptEntityInput(ent, input);
+		}
+	}
+	LogMessage("[SM] Objective State Now: %sd", input);
 }
