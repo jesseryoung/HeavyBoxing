@@ -248,7 +248,7 @@ public StopSong() {
 ToggleObjectiveState(bool:newState)
 {
 	/* Things to enable or disable */
-	new String:targets[5][25] = {"team_control_point_master","team_control_point","trigger_capture_area","item_teamflag","func_capturezone"};
+	new String:targets[5][50] = {"team_control_point_master","team_control_point","trigger_capture_area","item_teamflag","func_capturezone"};
 	new String:input[7] = "Disable";
 	if(newState) input = "Enable";
 
